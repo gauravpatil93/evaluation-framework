@@ -1,5 +1,6 @@
 import re
 
+
 class Results:
 
     def __init__(self, query_text, Q0, document_id, rank, score, exp):
@@ -27,4 +28,9 @@ class Results:
 
     def get_exp(self):
         return self.exp
+
+    def get_query_plan_text(self):
+        query = self.query_text
+        query = re.sub('%20', ' ', query)
+        return query
 
