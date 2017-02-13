@@ -11,8 +11,8 @@ class ResultsParser:
         with open(self.file_path, 'r') as f:
             for line in f:
                 line_list = line.split()
-                results_object = Results(line_list[0], int(line_list[1]), line_list[2], int(line_list[3]),
-                                      line_list[4], line_list[5])
+                results_object = Results(line_list[0], line_list[1], line_list[2], int(line_list[3]),
+                                      float(line_list[4]), line_list[5])
                 object_list.append(results_object)
         return object_list
 
