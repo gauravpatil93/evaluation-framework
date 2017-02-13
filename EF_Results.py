@@ -10,6 +10,7 @@ class Results:
         self.rank = rank
         self.score = score
         self.exp = exp
+        self.num_queries = 0
 
 
     def get_query_text(self):
