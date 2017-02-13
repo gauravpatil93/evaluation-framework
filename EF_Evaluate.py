@@ -1,10 +1,9 @@
 from EF_Qrel_parser import QrelParser
 from EF_Results_parser import ResultsParser
-from pprint import pprint
 import sys
 
-qrel_obj = QrelParser("spritzer.cbor.hierarchical.qrels")
-results_obj = ResultsParser("spritzer-self-test1.run")
+qrel_obj = QrelParser(sys.argv[1])
+results_obj = ResultsParser(sys.argv[2])
 
 qrel_obj_list = qrel_obj.get_object_list()
 results_obj_list = results_obj.get_object_list()
