@@ -226,19 +226,18 @@ def reciprocal_rank(query_text):
         if m.get_relevance() is 1:
             if m.get_query_text() == query_text:
                 obj.append(m)
-    obj2 = []
-    for n in results_obj_list:
-        if n.get_query_text() == query_text:
-            obj2.append(n)
-    obj2.sort(key=lambda x: x.get_rank())
-    val = 0.0
-    for x in obj:
-        for y in obj2:
-            if (x.get_query_text() == y.get_query_text()) and (x.get_hash() == y.get_hash()):
-                val = 1/float(y.get_rank())
-                break
-        break
-    return val
+    result_o = result_of_each_query[query_text]
+    result_o.sort(key=lambda x: x.get_rank())
+    val = []
+    first_rel = 0
+    for result_os in result_o:
+        for query_obj in obj:
+            if result_os.get_hash() == query_obj.get_hash():
+                val.append(1/float(result_os.get_rank()))
+    if not val:
+        return 0.0
+    else:
+        return val[first_rel]
 
 
 def reciprocal_rank_average():
@@ -249,6 +248,7 @@ def reciprocal_rank_average():
     sum = 0.0
     for res in result_text_dup:
         sum += reciprocal_rank(res)
+
     return sum/len(result_text_dup)
 
 # Prints the average reciprocal rank
@@ -258,7 +258,7 @@ print("recip_rank" + "\t all \t" + str(reciprocal_rank_average()))
 def precision_text(qrel_text, _at=0):
     """
     This method is similar to the precision method, the
-    only difference is that instead of the object this method 
+    only difference is that instead of the object this method
     takes the query string
     :param qrel_text: query string
     :param _at: rank
