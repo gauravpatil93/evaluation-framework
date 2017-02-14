@@ -1,6 +1,3 @@
-import re
-
-
 class Qrel:
     def __init__(self, query_text, constant, _hash, relevance):
         self.query_text = query_text
@@ -19,13 +16,4 @@ class Qrel:
 
     def get_relevance(self):
         return self.relevance
-
-    def get_query_plan_text(self):
-        query = self.query_text
-        query = re.sub('%20', ' ', query)
-        return query
-
-
-
-
-
+    
