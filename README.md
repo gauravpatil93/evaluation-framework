@@ -10,8 +10,8 @@ runid	         all 	mock <br />
 num_q	         all 	70 <br />
 num_ret	       all 	3463 <br />
 num_rel_ret	   all 	174 <br />
-map	           all 	0.13129848641880715 <br />
-gm_map	       all 	0.08638650967993469 <br />
+map	           all 	0.13301765234604757 <br />
+gm_map	       all 	0.08729481814555079 <br />
 Rpec	         all 	0.06408163265306123 <br />
 recip_rank	   all 	0.1644414031134317 <br />
 P_5	           all 	0.06000000000000002 <br />
