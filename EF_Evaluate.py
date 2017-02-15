@@ -57,7 +57,7 @@ for qrel_text in qrel_rem_dup:
     result_of_each_query[qrel_text] = list(intermediate_list)
 
 
-def precision(qrel_object, _at=0):
+def precision(qrel_text, _at=0):
     """
     This function calculates the precision at a specific rank
     :param qrel_object: This refers to objects of class EF_Qrel.
@@ -67,9 +67,9 @@ def precision(qrel_object, _at=0):
     similar_list = []
     for objs in qrel_obj_list:
         if objs.get_relevance() is 1:
-            if qrel_object.get_query_text() == objs.get_query_text():
+            if qrel_text == objs.get_query_text():
                 similar_list.append(objs.get_hash())
-    temp_list = result_of_each_query[qrel_object.get_query_text()]
+    temp_list = result_of_each_query[qrel_text]
     # This function sorts the list of objects based on the rank (Ascending)
     temp_list.sort(key=lambda x: x.get_rank())
     no_of_occurences = 0.0
@@ -77,12 +77,17 @@ def precision(qrel_object, _at=0):
         _at = len(temp_list)
     if _at > len(temp_list):
         for x in temp_list:
-            if x.get_hash() in similar_list:
-                no_of_occurences += 1
+            for y in similar_list:
+                if x.get_hash() == y:
+                    no_of_occurences += 1
     else:
-        for x in temp_list[:_at]:
-            if x.get_hash() in similar_list:
-                no_of_occurences += 1
+        for i, x in enumerate(temp_list):
+            if i <= _at:
+                for y in similar_list:
+                    if x.get_hash() == y:
+                        no_of_occurences += 1
+            else:
+                break
     return no_of_occurences/_at
 
 
@@ -98,22 +103,23 @@ def average_precision(query_id):
         if m.get_relevance() is 1:
             if m.get_query_text() == query_id:
                 obj.append(m)
-    obj2 = []
-    for n in results_obj_list:
-        if n.get_query_text() == query_id:
-            obj2.append(n)
-    obj3 = []
-    for x in obj:
-        for y in obj2:
-            if (x.get_query_text() == y.get_query_text()) and (x.get_hash() == y.get_hash()):
-                obj3.append(y)
+
+    obj2 = result_of_each_query[query_id]
+    obj2.sort(key=lambda x: x.get_rank())
+
+    ranks_matched_list = []
+
+    for x in obj2:
+        for y in obj:
+            if(x.get_query_text() == y.get_query_text()) and (x.get_hash() == y.get_hash()):
+                ranks_matched_list.append(x.get_rank())
     sum = 0.0
-    for objs in obj3:
-        sum += precision(objs, objs.get_rank())
-    if len(obj3) == 0:
+    for x in ranks_matched_list:
+        sum += precision(query_id, x)
+    if len(ranks_matched_list) is 0:
         return 0.0
     else:
-        return sum / len(obj3)
+        return sum / len(ranks_matched_list)
 
 
 def mean_average_precision():
@@ -122,40 +128,12 @@ def mean_average_precision():
     :return: map
     """
     sum = 0.0
-    for result in result_text_dup:
-        sum += average_precision(result)
+    for res in result_text_dup:
+        sum += average_precision(res)
     return sum / len(result_text_dup)
 
-
-def average_precision_geo(query_id):
-    """
-    This function follows the same logic of the average precision
-    function but returns 1.0 if there are no relevant query retrieved
-    :param query_id:
-    :return: average precision
-    """
-    obj = []
-    for m in qrel_obj_list:
-        if m.get_relevance() is 1:
-            if m.get_query_text() == query_id:
-                obj.append(m)
-    obj2 = []
-    for n in results_obj_list:
-        if n.get_query_text() == query_id:
-            obj2.append(n)
-    obj3 = []
-    for x in obj:
-        for y in obj2:
-            if (x.get_query_text() == y.get_query_text()) and (x.get_hash() == y.get_hash()):
-                obj3.append(y)
-    sum = 0.0
-    for objs in obj3:
-        sum += precision(objs, objs.get_rank())
-    if len(obj3) == 0:
-        return 1.0
-    else:
-        return sum / len(obj3)
-
+# Prints map
+print("map" + "\t all \t" + str(mean_average_precision()))
 
 def geometric_mean_average_precision():
     """
@@ -163,12 +141,14 @@ def geometric_mean_average_precision():
     :return: gm_map
     """
     product = 1.0
-    for result in result_text_dup:
-        product *= average_precision_geo(result)
+    for res in result_text_dup:
+        temp = average_precision(res)
+        if temp == 0:
+            product *= 1.0
+        else:
+            product *= temp
     return product ** (1/float(len(result_text_dup)))
 
-# Prints map
-print("map" + "\t all \t" + str(mean_average_precision()))
 
 # Prints the gm_map
 print("gm_map" + "\t all \t" + str(geometric_mean_average_precision()))
