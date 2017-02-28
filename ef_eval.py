@@ -1,5 +1,5 @@
 from ef_ir_results_parser import EfResultParser
-from ef_qrery_parser import EfQueryParser
+from ef_query_parser import EfQueryParser
 
 
 class Evaluate:
