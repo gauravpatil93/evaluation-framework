@@ -2,6 +2,8 @@ import argparse
 
 from trec_car.read_data import *
 
+from ef_BM25_ranking import *
+
 parser = argparse.ArgumentParser()
 parser.add_argument("outline_file", type=str, help="Qualified location of the outline file")
 parser.add_argument("paragraph_file", type=str, help="Qualified location of the paragraph file")
@@ -25,10 +27,15 @@ with open(paragraphs_cbor, 'rb') as f:
         paragraphs.append(tup)
 
 # Generate queries in plain text
-plain_text_queries = []
+queries = []
 for page in pages:
     for section_path in page.flat_headings_list():
         query_id_plain = " ".join([page.page_name] + [section.heading for section in section_path])
         query_id_formatted = "/".join([page.page_id] + [section.headingId for section in section_path])
         tup = (query_id_plain, query_id_formatted)
-        plain_text_queries.append(tup)
+        queries.append(tup)
+
+bm25_instance = BM25(queries, paragraphs)
+
+for x in paragraphs:
+    print(bm25_instance.bm25_score(queries[0][0], x[0], x[3]))

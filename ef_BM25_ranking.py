@@ -16,17 +16,17 @@ class BM25:
     def average_length_of_documents(self):
         summ = 0
         for document in self.documents:
-            summ += len(document.spilt())
+            summ += document[2]
         return summ / float(self.no_of_documents)
 
     def inverse_document_frequency(self, query_term):
         no_qi = self.no_of_documents_containing_qi(query_term)
-        math.log((self.no_of_documents - no_qi + 0.5) / (no_qi + 0.5))
+        return float(math.log((self.no_of_documents - no_qi + 0.5) / (no_qi + 0.5)))
 
     def no_of_documents_containing_qi(self, query_word):
         count = 0
-        for document in self.documents():
-            for word in document[3].get_text().split():
+        for document in self.documents:
+            for word in document[3].split():
                 if query_word == word:
                     count += 1
                     break
@@ -35,13 +35,28 @@ class BM25:
     @staticmethod
     def term_frequency_in_a_document(query_term, document):
         count = 0
-        for word in document.spilt():
+        for word in document.split():
             if query_term == word:
                 count += 1
-        return count
+        return float(count)
 
     def const_value_calculation(self, document):
-        return self.k * (1 - self.b + self.b * len(document.split()) / self.average_length_of_documents)
+        return float(self.k * (1 - self.b + (self.b * len(document.split()) / self.average_length_of_documents)))
 
+    def bm25_score(self, query, document_id, document):
+        query_words = query.split()
+        const_value = self.const_value_calculation(document)
+        score = 0
+        for query_term in query_words:
+            term_freq = BM25.term_frequency_in_a_document(query_term, document)
+            # print(term_freq)
+            score += self.inverse_document_frequency(query_term) * (
+            (term_freq * self.k_plus_one) / float(term_freq + const_value))
+        tup = (query, document_id, score)
+        return tup
 
-        # def BM25_score(self, ):
+    def get_no_of_documents(self):
+        return self.no_of_documents
+
+    def get_no_of_queries(self):
+        return self.no_of_queries
