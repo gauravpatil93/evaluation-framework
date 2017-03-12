@@ -11,10 +11,9 @@ class BM25:
         self.k = 1.2
         self.b = 0.75
         self.k_plus_one = self.k + 1
-        self.BM25_value = []
 
     def average_length_of_documents(self):
-        summ = 0
+        summ = 0.0
         for document in self.documents:
             summ += document[2]
         return summ / float(self.no_of_documents)
@@ -30,7 +29,7 @@ class BM25:
                 if query_word == word:
                     count += 1
                     break
-        return count
+        return float(count)
 
     @staticmethod
     def term_frequency_in_a_document(query_term, document):
@@ -44,15 +43,14 @@ class BM25:
         return float(self.k * (1 - self.b + (self.b * len(document.split()) / self.average_length_of_documents)))
 
     def bm25_score(self, query, document_id, document):
-        query_words = query.split()
+        query_words = query[0].split()
         const_value = self.const_value_calculation(document)
         score = 0
         for query_term in query_words:
             term_freq = BM25.term_frequency_in_a_document(query_term, document)
-            # print(term_freq)
-            score += self.inverse_document_frequency(query_term) * (
-            (term_freq * self.k_plus_one) / float(term_freq + const_value))
-        tup = (query, document_id, score)
+            score += self.inverse_document_frequency(query_term) * \
+                     ((term_freq * self.k_plus_one) / float(term_freq + const_value))
+        tup = (query[1], query[0], document_id, score)
         return tup
 
     def get_no_of_documents(self):

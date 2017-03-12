@@ -1,5 +1,7 @@
 import argparse
+from copy import deepcopy
 
+from trec_car.format_runs import *
 from trec_car.read_data import *
 
 from ef_BM25_ranking import *
@@ -37,5 +39,22 @@ for page in pages:
 
 bm25_instance = BM25(queries, paragraphs)
 
-for x in paragraphs:
-    print(bm25_instance.bm25_score(queries[0][0], x[0], x[3]))
+query_scores = dict()
+for query in queries:
+    temp_list = []
+    for document in paragraphs:
+        temp_list.append(bm25_instance.bm25_score(query, document[0], document[3]))
+    temp_list.sort(key=lambda x: x[3])
+    temp_list.reverse()
+    query_scores[query] = deepcopy(temp_list)
+
+with open(output_file_name, mode='w', encoding='UTF-8') as f:
+    writer = f
+    temp_list = []
+    for key, value in query_scores.items():
+        rank = 0
+        for x in value:
+            rank += 1
+            temp_list.append(RankingEntry(x[0], x[2], rank, x[3]))
+    format_run(writer, temp_list, exp_name='test')
+    f.close()
