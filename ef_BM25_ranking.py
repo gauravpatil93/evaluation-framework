@@ -152,10 +152,6 @@ class BM25:
         return tup
 
     def get_no_of_documents(self):
-        """
-        Returns the no of documents
-        :return: int
-        """
         return self.no_of_documents
 
     def get_no_of_queries(self):
