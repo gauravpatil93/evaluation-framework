@@ -20,13 +20,19 @@ pages = []
 with open(query_cbor, 'rb') as f:
     for p in itertools.islice(iter_annotations(f), 0, 1000):
         pages.append(p)
+    print("Gathered Pages")
 
 paragraphs = []
 with open(paragraphs_cbor, 'rb') as f:
     for p in itertools.islice(iter_paragraphs(f), 0, 500, 5):
-        tup = (p.para_id, p, len(p.get_text().lower().replace(',', '').replace('.', '').split()),
-               p.get_text().lower().replace(',', '').replace('.', ''))
+        para_id = p.para_id
+        para_content = p.get_text().lower().replace(',', '').replace('.', '')
+        para_content_list_of_words = para_content.split()
+        para_length = len(para_content_list_of_words)
+        tup = (para_id, para_length, para_content, para_content_list_of_words)
         paragraphs.append(tup)
+    print("Gathered Paragraphs")
+
 
 # Generate queries in plain text
 queries = []
@@ -36,6 +42,7 @@ for page in pages:
         query_id_formatted = "/".join([page.page_id] + [section.headingId for section in section_path])
         tup = (query_id_plain, query_id_formatted)
         queries.append(tup)
+print("Gathered Queries")
 
 bm25_instance = BM25(queries, paragraphs)
 
@@ -43,15 +50,19 @@ query_scores = dict()
 for query in queries:
     temp_list = []
     for document in paragraphs:
-        temp_list.append(bm25_instance.bm25_score(query, document[0], document[3]))
-    temp_list.sort(key=lambda x: x[3])
+        print(bm25_instance.bm25_score(query, document[0], document[2]))
+        temp_list.append(bm25_instance.bm25_score(query, document[0], document[2]))
+    temp_list.sort(key=lambda x: x[2])
     temp_list.reverse()
     query_scores[query] = deepcopy(temp_list)
 
 with open(output_file_name, mode='w', encoding='UTF-8') as f:
     writer = f
     temp_list = []
+    count = 0
     for key, value in query_scores.items():
+        count += 1
+        print(count)
         rank = 0
         for x in value:
             rank += 1

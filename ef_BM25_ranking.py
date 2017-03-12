@@ -15,8 +15,9 @@ class BM25:
     def average_length_of_documents(self):
         summ = 0.0
         for document in self.documents:
-            summ += document[2]
+            summ += len(document[3])
         return summ / float(self.no_of_documents)
+
 
     def inverse_document_frequency(self, query_term):
         no_qi = self.no_of_documents_containing_qi(query_term)
@@ -25,7 +26,7 @@ class BM25:
     def no_of_documents_containing_qi(self, query_word):
         count = 0
         for document in self.documents:
-            for word in document[3].split():
+            for word in document[3]:
                 if query_word == word:
                     count += 1
                     break
@@ -50,7 +51,7 @@ class BM25:
             term_freq = BM25.term_frequency_in_a_document(query_term, document)
             score += self.inverse_document_frequency(query_term) * \
                      ((term_freq * self.k_plus_one) / float(term_freq + const_value))
-        tup = (query[1], query[0], document_id, score)
+        tup = (query[1], document_id, score)
         return tup
 
     def get_no_of_documents(self):
