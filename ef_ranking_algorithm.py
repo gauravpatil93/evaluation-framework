@@ -19,13 +19,16 @@ with open(query_cbor, 'rb') as f:
 
 paragraphs = []
 with open(paragraphs_cbor, 'rb') as f:
-    for p in itertools.islice(iter_paragraphs(f), 0, 1000):
-        tup = (p.para_id, p)
+    for p in itertools.islice(iter_paragraphs(f), 0, 500, 5):
+        tup = (p.para_id, p, len(p.get_text().lower().replace(',', '').replace('.', '').split()),
+               p.get_text().lower().replace(',', '').replace('.', ''))
         paragraphs.append(tup)
 
 # Generate queries in plain text
 plain_text_queries = []
 for page in pages:
     for section_path in page.flat_headings_list():
-        query_id = " ".join([page.page_name] + [section.heading for section in section_path])
-        plain_text_queries.append(query_id)
+        query_id_plain = " ".join([page.page_name] + [section.heading for section in section_path])
+        query_id_formatted = "/".join([page.page_id] + [section.headingId for section in section_path])
+        tup = (query_id_plain, query_id_formatted)
+        plain_text_queries.append(tup)
