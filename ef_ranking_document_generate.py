@@ -33,6 +33,7 @@ with open(paragraphs_cbor, 'rb') as f:
         paragraphs.append(tup)
     print("Gathered Paragraphs")
 
+print(paragraphs[0])
 
 # Generate queries in plain text
 queries = []
@@ -40,7 +41,7 @@ for page in pages:
     for section_path in page.flat_headings_list():
         query_id_plain = " ".join([page.page_name] + [section.heading for section in section_path])
         query_id_formatted = "/".join([page.page_id] + [section.headingId for section in section_path])
-        tup = (query_id_plain, query_id_formatted)
+        tup = (query_id_plain, query_id_formatted, query_id_plain.split())
         queries.append(tup)
 print("Gathered Queries")
 
@@ -50,11 +51,12 @@ query_scores = dict()
 for query in queries:
     temp_list = []
     for document in paragraphs:
-        print(bm25_instance.bm25_score(query, document[0], document[2]))
-        temp_list.append(bm25_instance.bm25_score(query, document[0], document[2]))
+        temp_list.append(bm25_instance.bm25_score(query, document))
     temp_list.sort(key=lambda x: x[2])
     temp_list.reverse()
-    query_scores[query] = deepcopy(temp_list)
+    query_scores[query[0]] = deepcopy(temp_list)
+
+print(bm25_instance.get_average_length_of_documents())
 
 with open(output_file_name, mode='w', encoding='UTF-8') as f:
     writer = f
@@ -62,10 +64,10 @@ with open(output_file_name, mode='w', encoding='UTF-8') as f:
     count = 0
     for key, value in query_scores.items():
         count += 1
-        print(count)
         rank = 0
         for x in value:
             rank += 1
-            temp_list.append(RankingEntry(x[0], x[2], rank, x[3]))
+            temp_list.append(RankingEntry(x[0], x[1], rank, x[2]))
     format_run(writer, temp_list, exp_name='test')
+    print("Gathered Results")
     f.close()
