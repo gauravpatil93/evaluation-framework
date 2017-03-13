@@ -4,6 +4,13 @@
 chmod +x run.sh
 ./run.sh
 ```
+#Dependencies
+
+```
+TagMe: pip install tagme (GCUBE_TOKEN = "bfbfb535-3683-47c0-bd11-df06d5d96726-843339462")
+Argparse: conda install -c anaconda argparse=1.3.0
+Copy: For making deepcopy
+```
 
 Following results will appear once the shell script is run.<br />
 
