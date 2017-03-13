@@ -11,6 +11,7 @@ TagMe: pip install tagme (GCUBE_TOKEN = "bfbfb535-3683-47c0-bd11-df06d5d96726-84
 Argparse: conda install -c anaconda argparse=1.3.0
 Copy: For making deepcopy
 Itertools: conda install -c auto more-itertools=2.2
+TrecCar: https://github.com/TREMA-UNH/trec-car-tools/tree/master/python3
 ```
 
 Following results will appear once the shell script is run.<br />
