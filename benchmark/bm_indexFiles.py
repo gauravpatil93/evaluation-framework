@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-
+#Author Colin Etzel
+
 INDEX_DIR = "benchmarkIndex.index."
 
 import sys, os, lucene, threading, time
@@ -13,15 +15,6 @@ from org.apache.lucene.document import Document, Field, FieldType
 from org.apache.lucene.index import \
     FieldInfo, IndexWriter, IndexWriterConfig, IndexOptions
 from org.apache.lucene.store import SimpleFSDirectory
-
-"""
-This class is loosely based on the Lucene (java implementation) demo class
-org.apache.lucene.demo.IndexFiles.  It will take a directory as an argument
-and will index all of the files in that directory and downward recursively.
-It will index on the file path, the file name and the file contents.  The
-resulting Lucene index will be placed in the current directory and called
-'index'.
-"""
 import argparse
 
 parser = argparse.ArgumentParser()

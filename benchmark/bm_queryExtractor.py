@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-
+#author Colin Etzel
 import argparse
 from trec_car.read_data import *
 
