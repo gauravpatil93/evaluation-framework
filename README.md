@@ -12,10 +12,10 @@ Following results will appear once the shell script is run.<br />
 ============================================
 Generating results file with regular queries
 ============================================
-Gathered Pages<br />
-Gathered Paragraphs<br />
-Gathered Regular Queries<br />
-Gathered Results<br />
+Gathered Pages
+Gathered Paragraphs
+Gathered Regular Queries
+Gathered Results
 
 =======================================
 Running evaluation framework...........
@@ -43,11 +43,11 @@ P_1000	 all 	0.0005500000000000001
 =================================================================
 Generating results file with tagme enchanced queries.........
 =================================================================
-Gathered Pages<br />
-Gathered Paragraphs<br />
-Generating TagMe enchanced queries........<br />
-Gathered Tagme Enhanced Queries<br />
-Gathered Results<br />
+Gathered Pages
+Gathered Paragraphs
+Generating TagMe enchanced queries........
+Gathered Tagme Enhanced Queries
+Gathered Results
 =================================================================
 Running evaluation framework on results on tagme enhanced results
 =================================================================
